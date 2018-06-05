@@ -5,6 +5,8 @@ import unittest
 
 from pysolr import SolrCoreAdmin
 
+from .utils import SolrVersion
+
 
 class SolrCoreAdminTestCase(unittest.TestCase):
     def setUp(self):
@@ -12,8 +14,11 @@ class SolrCoreAdminTestCase(unittest.TestCase):
         self.solr_admin = SolrCoreAdmin('http://localhost:8983/solr/admin/cores')
 
     def test_status(self):
-        self.assertTrue('name="defaultCoreName"' in self.solr_admin.status())
         self.assertTrue('<int name="status">' in self.solr_admin.status(core='core0'))
+
+    @unittest.skipIf(SolrVersion() >= 5, 'Solr 5+ does not use defaultCoreName')
+    def test_status_has_defaultCoreName(self):
+        self.assertTrue('name="defaultCoreName"' in self.solr_admin.status())
 
     def test_create(self):
         self.assertTrue('<int name="status">0</int>' in self.solr_admin.create('wheatley'))

@@ -65,6 +65,7 @@ except DistributionNotFound:
     __version__ = '0.0.dev0'
     version_info = parse_version(__version__)
 
+
 def get_version():
     return __version__
 
